@@ -18,13 +18,13 @@ the mapping logic to generate an output record with the correct field name and t
 In the case of derived or computed field values, we first write a DataSource class and register it in our YAML config. 
 We do this by updating the python module specified in the lookup_source_module global setting 
 
-`
-  globals:
+
+`  globals:
     project_home: $GRAILED_HOME
     lookup_source_module: grailed_datasources # <-- create this module and place it on the PYTHONPATH
     service_module: grailed_services
-    datastore_module: grailed_datastores
-`
+    datastore_module: grailed_datastores`
+
 
 and adding an entry under the top-level `sources` key.
 
