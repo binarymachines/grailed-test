@@ -1,0 +1,56 @@
+
+globals:
+  project_home: $GRAILED_HOME
+  lookup_source_module: grailed_datasources
+  service_module: grailed_services
+  datastore_module: grailed_datastores
+
+
+datastores:
+    file:
+        class: FileStore
+        init_params:
+                - name: filename
+                  value: output.csv
+
+
+ingest_targets:
+    csv:
+        datastore: file
+        checkpoint_interval: 100
+
+
+sources:
+  grdata:
+    class: GrailedLookupDatasource
+
+maps:
+  default:
+    settings:
+        - name: use_default_identity_transform
+          value: True
+
+    lookup_source: 
+      grdata
+
+    fields:
+      - listing_id
+      - created_at
+      - sold_at
+      - user_id
+      - buyer_id
+      - initial_price
+      - sold_price
+      - item_type
+      - manufacturer
+      - buynow
+      - makeoffer
+      - location
+      - strata
+      - followerno
+      - size
+      - domestic_ship_price:
+        source: lookup
+
+          
+    
