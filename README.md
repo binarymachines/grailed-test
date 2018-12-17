@@ -12,7 +12,7 @@ Each map contains some metadata, a reference to a DataSource, and a collection o
 the map where the key is the output field name. Within each field we can have an input field name and a source for that field; that is,
 the place we go to find the field's value during a mapping operation. So for example, if we wished to map an input field called "firstname"
 to an output field called "first_name", we would add to our YAML file a field called "first_name" and specify its source as 
-the record itself (meaning the inbound record) and its key as "firstname". The ngst script, based on that configuration, will build
+the record itself (meaning the inbound record) and its key as "firstname". The `ngst` script, based on that configuration, will build
 the mapping logic to generate an output record with the correct field name and the correct value.
 
 In the case of derived or computed field values, we first write a DataSource class and register it in our YAML config. 
@@ -58,7 +58,7 @@ finally we let our map know that its designated datasource is the one we just cr
         source: lookup
 ```     
       
- And ngst, on startup, will dynamically load our Datasource and make sure it exposes a method called 
+ And `ngst`, on startup, will dynamically load our Datasource and make sure it exposes a method called 
  `lookup_calculated_field_name(...)`, calling that method when it needs to generate the mapped field. Note that a single YAML initfile
  can have multiple maps and multiple DataSources, so that operators can select arbitrary mappings simply by specifying the desired map
  as a command line argument.
@@ -90,7 +90,7 @@ To perform a mapping, issue `pip install -r requirements.txt` to install the dep
 generates a usage string). The YAML initfile parse logic is smart about environment variables, so in the case of plugins which require
 service logins, you can safely refer to credential strings by prepending $ to an init_param value. 
 
-Starting `ngst` without specifying an input CSV file will cause it to read from standard input, allowing you to pipe data to the transform script. Using the `-p` flag will cause ngst to run in preview mode (it will transform input records but write them to standard out rather than the designated target). For testing against large input datasets, use the `--limit=<N>` option to stop after N records have been transformed.
+Starting `ngst` without specifying an input CSV file will cause it to read from standard input, allowing you to pipe data to the transform script. Using the `-p` flag will cause `ngst` to run in preview mode (it will transform input records but write them to standard out rather than the designated target). For testing against large input datasets, use the `--limit=<N>` option to stop after N records have been transformed.
  
  
  
