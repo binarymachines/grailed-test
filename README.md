@@ -19,24 +19,26 @@ In the case of derived or computed field values, we first write a DataSource cla
 We do this by updating the python module specified in the lookup_source_module global setting 
 
 
-`  globals:
+```yaml  
+globals:
     project_home: $GRAILED_HOME
     lookup_source_module: grailed_datasources # <-- create this module and place it on the PYTHONPATH
     service_module: grailed_services
-    datastore_module: grailed_datastores`
+    datastore_module: grailed_datastores
+```
 
 
 and adding an entry under the top-level `sources` key.
 
-`
+```yaml
   sources:
     grdata:
       class: GrailedLookupDatasource  # <-- write this class in the grailed_datasources module 
-`
+```
 
 finally we let our map know that its designated datasource is the one we just created:
 
-`
+```yaml
   maps:
     default:
       settings:
@@ -45,15 +47,16 @@ finally we let our map know that its designated datasource is the one we just cr
 
       lookup_source: 
         grdata # <-- this must match the name under which we registered our GrailedLookupDatasource class
-`   
+``` 
       
  Now, in the individual field specs of our map, we can specify that a given output field will get its value not from the
  input record, but from the datasource:
-`
+ 
+```yaml
   fields:
       - calculated_field_name:
         source: lookup
-`     
+```     
       
  And ngst, on startup, will dynamically load our Datasource and make sure it exposes a method called 
  `lookup_calculated_field_name(...)`, calling that method when it needs to generate the mapped field. Note that a single YAML initfile
@@ -63,14 +66,16 @@ finally we let our map know that its designated datasource is the one we just cr
  An IngestTarget is simply a named destination for output records. Each target consists of a reference to a dynamically loaded DataStore
  class and a checkpoint_interval setting which essentially selects buffer depth in number of records (a checkpoint interval of 0 selects unbuffered writes to the target). Operators can simply subclass the DataStore base class and implement the `write()` method, then register the plugin
  in the YAML file under the top-level `datastores` key:
- `
+ 
+ ```yaml
    datastores:
       file:
           class: FileStore
           init_params:
                   - name: filename
                     value: output.csv
-`
+```
+
 then, at the command line, specify the target by key. ngst will perform the configured mapping on the input data and write the output
 records to the designated DataStore.
 
