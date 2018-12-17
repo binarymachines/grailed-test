@@ -1,11 +1,11 @@
 # grailed-test
 Data engineering challenge
 
-The code for this challenge uses the Mercury data engineering toolkit, which is an in-progress work at Binarymachines. In particular,
-it uses the ngst Python script to transform CSV files and send the results to an arbitrary target.
+The code for this challenge uses the Mercury data engineering toolkit from Binarymachines. In particular,
+it uses the `ngst` Python script to transform CSV files and send the results to an arbitrary target.
 
 
-ngst employs a metaphor called a Map, along with four pluggable types: DatasSources, IngestTargets, DataStores, and ServiceObjects.
+`ngst` employs a metaphor called a Map, along with four pluggable types: DatasSources, IngestTargets, DataStores, and ServiceObjects.
 
 A Map is a structured type describing the relationship between an input record (a set of name-value pairs) and an output record.
 Each map contains some metadata, a reference to a DataSource, and a collection of fields. The fields comprise a nested dictionary inside
@@ -64,8 +64,7 @@ finally we let our map know that its designated datasource is the one we just cr
  as a command line argument.
  
  An IngestTarget is simply a named destination for output records. Each target consists of a reference to a dynamically loaded DataStore
- class and a checkpoint_interval setting which essentially selects buffer depth in number of records (a checkpoint interval of 0 selects unbuffered writes to the target). Operators can simply subclass the DataStore base class and implement the `write()` method, then register the plugin
- in the YAML file under the top-level `datastores` key:
+ class and a `checkpoint_interval` setting which selects buffer depth in number of records (a checkpoint interval of 0 selects unbuffered writes to the target). Operators can simply subclass the DataStore base class and implement the `write()` method, then register the plugin in the YAML file under the top-level `datastores` key:
  
  ```yaml
    datastores:
@@ -76,18 +75,22 @@ finally we let our map know that its designated datasource is the one we just cr
                     value: output.csv
 ```
 
-then, at the command line, specify the target by key. ngst will perform the configured mapping on the input data and write the output
+then, at the command line, specify the target by key. `ngst` will perform the configured mapping on the input data and write the output
 records to the designated DataStore.
 
 
 A ServiceObject is simply a long-running singleton which is spun up at program start. It is exactly the same type as is used in the 
 Binarymachines SNAP (Small Network Applications in Python) microservices library, and it is initialized in exactly the same way
 (the YAML config syntax is drop-in compatible).
-By using ServiceObjects, we can easily inject complex dependencies such as AWS or GCP targets, standalone databases, and any other
+By using ServiceObjects, we can easily inject complex dependencies such as AWS or GCP targets, standalone databases, or any other
 services our record transformer needs to use. 
 
  
- 
+To perform a mapping, issue `pip install -r requirements.txt` to install the dependencies, then run `ngst` (running it without arguments
+generates a usage string). The YAML initfile parse logic is smart about environment variables, so in the case of plugins which require
+service logins, you can safely refer to credential strings by prepending $ to an init_param value. 
+
+Starting `ngst` without specifying an input CSV file will cause it to read from standard input, allowing you to pipe data to the transform script. Using the `-p` flag will cause ngst to run in preview mode (it will transform input records but write them to standard out rather than the designated target). For testing against large input datasets, use the `--limit=<N>` option to stop after N records have been transformed.
  
  
  
