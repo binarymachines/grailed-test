@@ -18,23 +18,25 @@ the mapping logic to generate an output record with the correct field name and t
 In the case of derived or computed field values, we first write a DataSource class and register it in our YAML config. 
 We do this by updating the python module specified in the lookup_source_module global setting 
 
-
+`
 globals:
   project_home: $GRAILED_HOME
   lookup_source_module: grailed_datasources # <-- create this module and place it on the PYTHONPATH
   service_module: grailed_services
   datastore_module: grailed_datastores
+`
 
+and adding an entry under the top-level `sources` key.
 
-and adding an entry under the top-level sources key.
-
+`
 sources:
   grdata:
     class: GrailedLookupDatasource  # <-- write this class in the grailed_datasources module 
-
+`
 
 finally we let our map know that its designated datasource is the one we just created:
 
+`
 maps:
   default:
     settings:
@@ -43,33 +45,32 @@ maps:
 
     lookup_source: 
       grdata # <-- this must match the name under which we registered our GrailedLookupDatasource class
-      
+`   
       
  Now, in the individual field specs of our map, we can specify that a given output field will get its value not from the
  input record, but from the datasource:
- 
+`
 fields:
     - calculated_field_name:
       source: lookup
-      
+`     
       
  And ngst, on startup, will dynamically load our Datasource and make sure it exposes a method called 
- lookup_calculated_field_name(...), calling that method when it needs to generate the mapped field. Note that a single YAML initfile
+ `lookup_calculated_field_name(...)`, calling that method when it needs to generate the mapped field. Note that a single YAML initfile
  can have multiple maps and multiple DataSources, so that operators can select arbitrary mappings simply by specifying the desired map
  as a command line argument.
  
  An IngestTarget is simply a named destination for output records. Each target consists of a reference to a dynamically loaded DataStore
- class and a checkpoint_interval setting which essentially selects buffer depth in number of records (a checkpoint interval of 0 selects unbuffered writes 
- to the target). Operators can simply subclass the DataStore base class and implement the write() method, then register the plugin
- in the YAML file under the top-level datastores key:
- 
+ class and a checkpoint_interval setting which essentially selects buffer depth in number of records (a checkpoint interval of 0 selects unbuffered writes to the target). Operators can simply subclass the DataStore base class and implement the `write()` method, then register the plugin
+ in the YAML file under the top-level `datastores` key:
+ `
  datastores:
     file:
         class: FileStore
         init_params:
                 - name: filename
                   value: output.csv
-
+`
 then, at the command line, specify the target by key. ngst will perform the configured mapping on the input data and write the output
 records to the designated DataStore.
 
