@@ -1,0 +1,52 @@
+
+globals:
+  project_home: $GRAILED_HOME
+  service_module: grailed_services
+  datastore_module: grailed_datastores
+
+
+datastores:
+    file:
+        class: FileStore
+        init_params:
+          - name: filename
+            value: output.csv
+
+    redshift_data:
+        class: RedshiftDatastore
+        init_params:
+          - name: staging_file
+            value: redshift_output.csv
+
+
+service_objects:
+  redshift_svc:
+    class: RedshiftServiceObject
+    init_params:
+      - name: host
+        value: interviews-cluster.csvlsj1bsosv.us-east-1.redshift.amazonaws.com
+      
+      - name: schema
+        value: candidate_f
+
+      - name: port
+        value: 5439
+
+      - name: database
+        value: dev
+
+      - name: username
+        value: $GRAILED_DB_USER
+        
+      - name: password
+        value: $GRAILED_DB_PASSWORD
+      
+
+ingest_targets:
+    textfile:
+        datastore: file
+        checkpoint_interval: 100
+
+    db:
+        datastore: redshift_data
+        checkpoint_interval: 100

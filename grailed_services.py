@@ -1,3 +1,3 @@
 #!/usr/bin/env python
 
-from aws_services import *
+from mercury_services.db_services import *

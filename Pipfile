@@ -6,7 +6,7 @@ name = "pypi"
 [dev-packages]
 
 [packages]
-mercury-toolkit = "*"
+mercury-toolkit = ">=0.7.8"
 snap-micro = "*"
 
 [requires]
